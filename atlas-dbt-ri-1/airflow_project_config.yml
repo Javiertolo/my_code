@@ -1,0 +1,33 @@
+project:
+  project_id: ri
+  iceberg_maintenance: true
+  to_snowflake: true
+  custom_pagerduty_connection_id: false
+  on_execute_slack_channel_suffix: alerts
+  on_success_slack_channel_suffix: alerts
+  on_failure_slack_channel_suffix: alerts
+dags:
+  - name: silver_tier_dag
+    catchup: False
+    start_date: "2023-09-18"
+    schedule_interval: "0 */12 * * 5"
+    airflow_tags:
+      - sandbox
+      - atlas
+      - silver
+    dbt_include_tags:
+      - silver
+    dbt_exclude_tags:
+      - gold
+  - name: gold_tier_dag
+    catchup: True
+    start_date: "2023-10-01"
+    schedule_interval: "0 0 * * 1-5"
+    airflow_tags:
+      - sandbox
+      - atlas
+      - gold
+    dbt_include_tags:
+      - gold
+    dbt_exclude_tags:
+      - silver
